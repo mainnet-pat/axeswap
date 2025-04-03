@@ -20,7 +20,7 @@ export default function OrderbookPage() {
       { href: "/orderbooks", title: "Orderbooks", collapsible: false },
       { href: `/orderbooks/${orderbookId}`, title: `${orderbookId}`, collapsible: false },
     ]} />
-    <div className='flex flex-col gap-4 items-center'>
+    <div className='flex flex-col gap-4 items-center px-4'>
       {[orderbook, orderbook2].map((orderbook) => (
         <div className='border-2 border-slate-200 rounded-md p-4' key={`${orderbook.asset}-${orderbook.targetAsset}`}>
           <OrderbookView

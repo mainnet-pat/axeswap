@@ -2,8 +2,8 @@ FROM node:22-slim
 
 WORKDIR /app
 COPY . /app
-RUN yarn install --frozen-lockfile
 WORKDIR /app/packages/swap
+RUN yarn install --frozen-lockfile
 RUN yarn build
 
 CMD ["yarn", "relay"]

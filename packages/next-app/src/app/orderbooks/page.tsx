@@ -13,7 +13,7 @@ export default function OrderbooksPage() {
     <Crumbs value={[
       { href: "/orderbooks", title: "Orderbooks", collapsible: false },
     ]} />
-    <div className='flex flex-col gap-4 items-center'>
+    <div className='flex flex-col gap-4 items-center px-4'>
       {OrderbookPairs.map(({ asset, targetAsset }) => (
         <div className='border-2 border-slate-200 rounded-md p-4 cursor-pointer' onClick={() => router.push(`/orderbooks/${asset}-${targetAsset}`)} key={`${asset}-${targetAsset}`}>
           <div className="flex flex-row gap-3 items-center">
