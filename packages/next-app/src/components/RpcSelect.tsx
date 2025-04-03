@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 export function RpcSelect({label, placeholder, coin, network, value, onValueChange, className} : {label?: string, placeholder?: string, coin: "bch" | "monero", network: string, value?: string, onValueChange?: (value: string) => void, className?: string}) {
   const coinName = coin === 'monero' ? 'Monero' : 'BCH';
   return <Label className={cn('flex flex-col gap-2', className)}>
-    {label && <div>Default Monero RPC Endpoint:</div>}
+    {label && <div>Default {coinName} RPC Endpoint:</div>}
     <div className='flex flex-row gap-2'>
       <Input
         placeholder={placeholder}
