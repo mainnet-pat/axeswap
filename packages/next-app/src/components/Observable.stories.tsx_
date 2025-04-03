@@ -1,0 +1,17 @@
+import type { Meta, StoryObj } from '@storybook/react';
+
+import { ObservableView } from './ObservableView';
+import { SwapManagerContextProvider } from "@/providers/SwapManagerProvider";
+
+const meta: Meta<typeof ObservableView> = {
+  component: ObservableView,
+  decorators: (Story) => <SwapManagerContextProvider><Story /></SwapManagerContextProvider>,
+} satisfies Meta<typeof ObservableView>;
+
+export default meta;
+type Story = StoryObj<typeof ObservableView>;
+
+export const Default: Story = {
+  args: {
+  },
+};

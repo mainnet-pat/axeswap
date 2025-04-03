@@ -1,0 +1,35 @@
+import { useEffect, useState, useRef, useMemo } from 'react';
+import { TypedEventEmitter } from '@libp2p/interface'
+import { ObservableEvents } from '@xmr-bch-swap/swap';
+
+export const useObservable = <T extends TypedEventEmitter<ObservableEvents>>(instance: T | undefined): T | undefined => {
+  const [update, forceUpdate] = useState(0);
+  const listenerRef = useRef<() => void | undefined>(undefined);
+
+  useEffect(() => {
+    if (!instance) {
+      return;
+    }
+
+    const newListener = () => {
+      console.log('manager update');
+      forceUpdate(prev => prev + 1);
+    };
+
+    // Remove any existing listeners
+    if (listenerRef.current) {
+      instance.removeEventListener("#update", listenerRef.current);
+    }
+
+    // Add the listener
+    listenerRef.current = newListener;
+    instance.addEventListener('#update', newListener);
+
+    // Cleanup listener and remove on unmount
+    return () => {
+      instance.removeEventListener("#update", newListener);
+    };
+  }, [instance]);
+
+  return instance;
+};

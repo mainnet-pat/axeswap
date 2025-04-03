@@ -1,0 +1,79 @@
+version: '3.7'
+services:
+  monerod:
+    image: mainnetpat/monerod:v0.18.3.2
+    entrypoint: [""]
+    command: monerod --offline --testnet --disable-rpc-ban --db-sync-mode=safe --no-zmq --fixed-difficulty 1 --non-interactive --rpc-bind-ip=0.0.0.0 --rpc-bind-port=28081 --confirm-external-bind --rpc-ssl=disabled --rpc-access-control-origins="*"
+    ports:
+      - '127.0.0.1:28081:28081'
+    # volumes:
+    #   - xmrdata:/monero
+    restart: unless-stopped
+  monerod-mine:
+    image: mainnetpat/monerod:v0.18.3.2
+    entrypoint: [""]
+    command: /bin/sh -c "/bin/sleep 3 && curl http://monerod:28081/json_rpc -d '{\"jsonrpc\":\"2.0\",\"id\":\"0\",\"method\":\"generateblocks\",\"params\":{\"amount_of_blocks\":160,\"wallet_address\":\"A1y9sbVt8nqhZAVm3me1U18rUVXcjeNKuBd1oE2cTs8biA9cozPMeyYLhe77nPv12JA3ejJN3qprmREriit2fi6tJDi99RR\",\"starting_nonce\":0}' -H 'Content-Type:application/json' 1> /dev/null"
+
+  # monero-wallet-rpc:
+  #   image: mainnetpat/monerod:v0.18.3.2
+  #   entrypoint: [""]
+  #   command: monero-wallet-rpc --allow-mismatched-daemon-version --daemon-host=monerod --daemon-port=28081 --password=MYPASSWORD --trusted-daemon --disable-rpc-ban --rpc-bind-ip=0.0.0.0 --rpc-bind-port=28084 --disable-rpc-login --confirm-external-bind --non-interactive --log-level=4 --rpc-ssl=disabled --daemon-ssl=disabled --wallet-dir=/home/monero --rpc-access-control-origins="*"
+  #   ports:
+  #     - '127.0.0.1:28084:28084'
+  #   restart: unless-stopped
+
+  bitcoind:
+    image: mainnet/bitcoin-cash-node:v27.1.0
+    command: bitcoind -zmqpubhashtx=tcp://*:28332 -zmqpubrawtx=tcp://*:28332 -zmqpubhashblock=tcp://*:28332 -zmqpubrawblock=tcp://*:28332 -txindex=1 -regtest -rpcbind=bitcoind -rpcallowip=0/0 -rpcuser=alice -rpcpassword=password -rpccorsdomain="http://localhost:3000"
+    healthcheck:
+      test: ["CMD", "/entrypoint.sh", "bitcoin-cli", "getblockchaininfo"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    ports:
+      - "127.0.0.1:18443:18443" # rpc
+    #   - "28332:28332" # zmq pub
+    expose: [18443, 28332]
+    volumes:
+      - bitcoin-data:/data
+    networks:
+      - bitcoin
+    restart: unless-stopped
+  bitcoin-mine:
+    image: mainnet/bitcoin-cash-node:v27.1.0
+    entrypoint: ["/entrypoint.sh"]
+    command: /bin/sh -c "/bin/sleep 3 && bitcoin-cli -regtest -rpcconnect=bitcoind  -rpcuser=alice -rpcpassword=password -rpcport=18443 generatetoaddress 215 bchreg:qpttdv3qg2usm4nm7talhxhl05mlhms3ys43u76rn0 1> /dev/null"
+    networks:
+      - bitcoin
+  fulcrum:
+    image: cculianu/fulcrum
+    command: /bin/sh -c "/bin/sleep 5 && Fulcrum /tmp/fulcrum.conf"
+    ports:
+      - "127.0.0.1:60001:60001"
+      - "127.0.0.1:60003:60003"
+    expose: [60001, 60003]
+    depends_on:
+      - bitcoin-mine
+    networks:
+      - bitcoin
+    volumes:
+      - ./docker/fulcrum/fulcrum.conf:/tmp/fulcrum.conf
+    restart: unless-stopped
+
+  # coincap-proxy:
+  #   image: nginx:latest
+  #   ports:
+  #     - 127.0.0.1:12345:80
+  #   volumes:
+  #     - ./docker/coincap-proxy/default.conf:/etc/nginx/conf.d/default.conf
+  #   restart: always
+
+networks:
+  bitcoin:
+
+volumes:
+  bitcoin-data:
+  sql-data:
+  fulcrum-data:
+  xmrdata:

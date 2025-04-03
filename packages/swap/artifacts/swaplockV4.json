@@ -1,0 +1,49 @@
+{
+  "contractName": "Swaplock",
+  "constructorInputs": [
+    {
+      "name": "miningFee",
+      "type": "int"
+    },
+    {
+      "name": "aliceOutput",
+      "type": "bytes"
+    },
+    {
+      "name": "bobPubkeyVES",
+      "type": "pubkey"
+    },
+    {
+      "name": "timelock_0",
+      "type": "int"
+    },
+    {
+      "name": "refundLockingBytecode",
+      "type": "bytes"
+    }
+  ],
+  "abi": [
+    {
+      "name": "SwapOrForwardToRefund",
+      "inputs": [
+        {
+          "name": "bobSignatureVES",
+          "type": "bytes"
+        }
+      ]
+    }
+  ],
+  "bytecode": "OP_TXINPUTCOUNT OP_1 OP_NUMEQUALVERIFY OP_TXOUTPUTCOUNT OP_1 OP_NUMEQUALVERIFY OP_0 OP_UTXOVALUE OP_0 OP_OUTPUTVALUE OP_SUB OP_NUMEQUALVERIFY OP_0 OP_INPUTSEQUENCENUMBER OP_0 OP_NUMEQUAL OP_IF OP_0 OP_OUTPUTBYTECODE OP_OVER OP_EQUALVERIFY OP_4 OP_PICK OP_OVER OP_3 OP_PICK OP_CHECKDATASIGVERIFY OP_ELSE OP_2 OP_PICK OP_CHECKSEQUENCEVERIFY OP_DROP OP_0 OP_OUTPUTBYTECODE OP_4 OP_PICK OP_EQUALVERIFY OP_4 OP_PICK OP_0 OP_EQUALVERIFY OP_ENDIF OP_2DROP OP_2DROP OP_DROP OP_1",
+  "source": "pragma cashscript ^0.10.0;\n\n// v4.0.0\n// Alice has XMR, wants BCH.\n// Bob has BCH, wants XMR.\n\ncontract Swaplock(\n    int miningFee,\n    bytes aliceOutput,\n    pubkey bobPubkeyVES,\n    int timelock_0,\n    bytes refundLockingBytecode\n) {\n    function SwapOrForwardToRefund(bytes bobSignatureVES) {\n        // Verify 1-in-1-out TX form\n        require(tx.inputs.length == 1);\n        require(tx.outputs.length == 1);\n\n        // Verify pre-agreed mining fee.\n        require(miningFee == tx.inputs[0].value - tx.outputs[0].value);\n\n        // If sequence is not used then it is a regular swap TX.\n        if(tx.inputs[0].sequenceNumber == 0) {\n            // Verify that the BCH is forwarded to Alice's output.\n            require(tx.outputs[0].lockingBytecode == aliceOutput);\n\n            // Require Alice to decrypt and publish Bob's VES signature.\n            // The \"message\" signed is simply a sha256 hash of Alice's output\n            // locking bytecode.\n            // By decrypting Bob's VES and publishing it, Alice reveals her\n            // XMR key share to Bob.\n            require(checkDataSig(datasig(bobSignatureVES), aliceOutput, bobPubkeyVES));\n\n            // If a TX using this path is mined then Alice gets her BCH.\n            // Bob uses the revealed XMR key share to collect his XMR.\n        }\n        // Refund will become available when timelock expires, and it would\n        // expire because Alice didn't collect, either of her own accord or\n        // because Bob witheld the hashlock secret.\n        else {\n            // Verify refund timelock.\n            require(tx.age >= timelock_0);\n\n            // Verify that the BCH is forwarded to the Refund contract.\n            require(tx.outputs[0].lockingBytecode == refundLockingBytecode);\n\n            // Not used, require 0 to prevent a malicious party from bloating\n            // the TX by pushing garbage bytes.\n            require(bobSignatureVES == 0x);\n\n            // BCH is simply forwarded to\n            // the refund contract.\n        }\n    }\n}\n",
+  "debug": {
+    "bytecode": "c3519c69c4519c69007a00c600cc949c6900cb009c6300cd51798769547951795379ba69675279b27500cd54798769547900876968517777777777",
+    "sourceMap": "16:16:16:32;:36::37;:16:::1;:8::39;17:16:17:33:0;:37::38;:16:::1;:8::40;20:16:20:25:0;;:39::40;:29::47;:61::62;:50::69;:29:::1;:16;:8::71;23:21:23:22:0;:11::38;:42::43;:11:::1;:45:36:9:0;25:31:25:32;:20::49;:53::64;;:20:::1;:12::66;32:41:32:56:0;;:59::70;;:72::84;;:20::85:1;:12::87;40:13:53:9:0;42:30:42:40;;:12::42:1;;45:31:45:32:0;:20::49;:53::74;;:20:::1;:12::76;49:20:49:35:0;;:39::41;:20:::1;:12::43;40:13:53:9;14:4:54:5;;;;;",
+    "logs": [],
+    "requireMessages": []
+  },
+  "compiler": {
+    "name": "cashc",
+    "version": "0.10.0-next.2"
+  },
+  "updatedAt": "2024-03-13T11:03:46.119Z"
+}

@@ -1,0 +1,73 @@
+diff --git a/node_modules/cashscript/dist/Contract.js b/node_modules/cashscript/dist/Contract.js
+index 8a71e7c..4b7a811 100644
+--- a/node_modules/cashscript/dist/Contract.js
++++ b/node_modules/cashscript/dist/Contract.js
+@@ -30,7 +30,7 @@ export class Contract {
+         }
+         else {
+             artifact.abi.forEach((f, i) => {
+-                this.functions[f.name] = this.createFunction(f, i);
++                this.functions[f.name] = this.createFunction(f, this.options.ignoreSelector ? undefined : i);
+             });
+         }
+         // Populate the functions object with the contract's functions
+@@ -42,7 +42,7 @@ export class Contract {
+         }
+         else {
+             artifact.abi.forEach((f, i) => {
+-                this.unlock[f.name] = this.createUnlocker(f, i);
++                this.functions[f.name] = this.createFunction(f, this.options.ignoreSelector ? undefined : i);
+             });
+         }
+         this.name = artifact.contractName;
+diff --git a/node_modules/cashscript/dist/LibauthTemplate.js b/node_modules/cashscript/dist/LibauthTemplate.js
+index ba3e1ad..a46946a 100644
+--- a/node_modules/cashscript/dist/LibauthTemplate.js
++++ b/node_modules/cashscript/dist/LibauthTemplate.js
+@@ -15,7 +15,7 @@ export const buildTemplate = async ({ transaction, transactionHex = undefined, /
+         supported: ['BCH_2023_05'],
+         version: 0,
+         entities: generateTemplateEntities(contract.artifact, transaction.abiFunction, transaction.encodedFunctionArgs),
+-        scripts: generateTemplateScripts(contract.artifact, contract.addressType, transaction.abiFunction, transaction.encodedFunctionArgs, contract.encodedConstructorArgs),
++        scripts: generateTemplateScripts(contract.artifact, contract.addressType, transaction.abiFunction, transaction.encodedFunctionArgs, contract.encodedConstructorArgs, contract.options),
+         scenarios: generateTemplateScenarios(contract, transaction, txHex, contract.artifact, transaction.abiFunction, transaction.encodedFunctionArgs, contract.encodedConstructorArgs),
+     };
+     transaction.inputs
+@@ -98,10 +98,10 @@ const generateTemplateEntities = (artifact, abiFunction, encodedFunctionArgs) =>
+     }
+     return entities;
+ };
+-const generateTemplateScripts = (artifact, addressType, abiFunction, encodedFunctionArgs, encodedConstructorArgs) => {
++const generateTemplateScripts = (artifact, addressType, abiFunction, encodedFunctionArgs, encodedConstructorArgs, contractOptions) => {
+     // definition of locking scripts and unlocking scripts with their respective bytecode
+     return {
+-        unlock_lock: generateTemplateUnlockScript(artifact, abiFunction, encodedFunctionArgs),
++        unlock_lock: generateTemplateUnlockScript(artifact, abiFunction, encodedFunctionArgs, contractOptions),
+         lock: generateTemplateLockScript(artifact, addressType, encodedConstructorArgs),
+     };
+ };
+@@ -118,9 +118,9 @@ const generateTemplateLockScript = (artifact, addressType, constructorArguments)
+         ].join('\n'),
+     };
+ };
+-const generateTemplateUnlockScript = (artifact, abiFunction, encodedFunctionArgs) => {
++const generateTemplateUnlockScript = (artifact, abiFunction, encodedFunctionArgs, contractOptions) => {
+     const functionIndex = artifact.abi.findIndex((func) => func.name === abiFunction.name);
+-    const functionIndexString = artifact.abi.length > 1
++    const functionIndexString = artifact.abi.length > 1 && !contractOptions.ignoreSelector
+         ? ['// function index in contract', `<function_index> // int = <${functionIndex}>`, '']
+         : [];
+     return {
+diff --git a/node_modules/cashscript/dist/Transaction.js b/node_modules/cashscript/dist/Transaction.js
+index 95e51fa..2b1219d 100644
+--- a/node_modules/cashscript/dist/Transaction.js
++++ b/node_modules/cashscript/dist/Transaction.js
+@@ -118,7 +118,7 @@ export class Transaction {
+     // method to debug the transaction with libauth VM, throws upon evaluation error
+     async debug() {
+         if (!this.contract.artifact.debug) {
+-            console.warn('No debug information found in artifact. Recompile with cashc version 0.10.0 or newer to get better debugging information.');
++            // console.warn('No debug information found in artifact. Recompile with cashc version 0.10.0 or newer to get better debugging information.');
+         }
+         const template = await this.getLibauthTemplate();
+         return debugTemplate(template, this.contract.artifact);

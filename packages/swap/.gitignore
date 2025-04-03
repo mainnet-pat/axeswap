@@ -1,0 +1,6 @@
+data
+node_modules
+coverage
+yarn-error.log
+dist
+bin/relay-peer-id.json

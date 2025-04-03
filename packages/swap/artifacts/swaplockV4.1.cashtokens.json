@@ -1,0 +1,28 @@
+{
+  "contractName": "SwaplockV4.1",
+  "constructorInputs": [
+  ],
+  "abi": [
+    {
+      "name": "swap",
+      "inputs": [
+        {
+          "name": "signatureVES",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "refund",
+      "inputs": []
+    }
+  ],
+  "debug": {},
+  "bytecode": "OP_TXINPUTCOUNT OP_1 OP_NUMEQUALVERIFY OP_TXOUTPUTCOUNT OP_1 OP_NUMEQUALVERIFY <mining_fee> OP_0 OP_UTXOVALUE OP_0 OP_OUTPUTVALUE OP_SUB OP_NUMEQUALVERIFY OP_0 OP_UTXOTOKENCATEGORY OP_0 OP_OUTPUTTOKENCATEGORY OP_EQUALVERIFY OP_0 OP_UTXOTOKENCOMMITMENT OP_0 OP_OUTPUTTOKENCOMMITMENT OP_EQUALVERIFY OP_0 OP_UTXOTOKENAMOUNT OP_0 OP_OUTPUTTOKENAMOUNT OP_NUMEQUALVERIFY OP_0 OP_INPUTSEQUENCENUMBER OP_NOTIF <out_1> OP_0 OP_OUTPUTBYTECODE OP_OVER OP_EQUALVERIFY <public_key> OP_CHECKDATASIG OP_ELSE <timelock> OP_CHECKSEQUENCEVERIFY OP_DROP <out_2> OP_0 OP_OUTPUTBYTECODE OP_EQUAL OP_ENDIF",
+  "source": "https://gitlab.com/0353F40E/cross-chain-swap-ves/-/raw/master/contracts/v4-XMR-CashTokens/cross-chain-swap-ves-optimized.bitauth-template.json",
+  "compiler": {
+    "name": "cashc",
+    "version": "0.10.0-next.2"
+  },
+  "updatedAt": "2024-03-13T11:03:46.119Z"
+}

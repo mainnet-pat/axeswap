@@ -1,0 +1,55 @@
+pragma cashscript ^0.10.0;
+
+// v4.0.0
+// Alice has XMR, wants BCH.
+// Bob has BCH, wants XMR.
+
+contract Swaplock(
+    int miningFee,
+    bytes aliceOutput,
+    pubkey bobPubkeyVES,
+    int timelock_0,
+    bytes refundLockingBytecode
+) {
+    function SwapOrForwardToRefund(bytes bobSignatureVES) {
+        // Verify 1-in-1-out TX form
+        require(tx.inputs.length == 1);
+        require(tx.outputs.length == 1);
+
+        // Verify pre-agreed mining fee.
+        require(miningFee == tx.inputs[0].value - tx.outputs[0].value);
+
+        // If sequence is not used then it is a regular swap TX.
+        if(tx.inputs[0].sequenceNumber == 0) {
+            // Verify that the BCH is forwarded to Alice's output.
+            require(tx.outputs[0].lockingBytecode == aliceOutput);
+
+            // Require Alice to decrypt and publish Bob's VES signature.
+            // The "message" signed is simply a sha256 hash of Alice's output
+            // locking bytecode.
+            // By decrypting Bob's VES and publishing it, Alice reveals her
+            // XMR key share to Bob.
+            require(checkDataSig(datasig(bobSignatureVES), aliceOutput, bobPubkeyVES));
+
+            // If a TX using this path is mined then Alice gets her BCH.
+            // Bob uses the revealed XMR key share to collect his XMR.
+        }
+        // Refund will become available when timelock expires, and it would
+        // expire because Alice didn't collect, either of her own accord or
+        // because Bob witheld the hashlock secret.
+        else {
+            // Verify refund timelock.
+            require(tx.age >= timelock_0);
+
+            // Verify that the BCH is forwarded to the Refund contract.
+            require(tx.outputs[0].lockingBytecode == refundLockingBytecode);
+
+            // Not used, require 0 to prevent a malicious party from bloating
+            // the TX by pushing garbage bytes.
+            require(bobSignatureVES == 0x);
+
+            // BCH is simply forwarded to
+            // the refund contract.
+        }
+    }
+}
