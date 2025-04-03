@@ -150,11 +150,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <div className="flex flex-row gap-4 pl-2">
+          <Link href="https://github.com/mainnet-pat/axeswap" target="_blank" title="Github">
+            <Github />
+          </Link>
           <Link href="https://twitter.com/mainnet_pat" target="_blank" title="Twitter">
             <Twitter />
-          </Link>
-          <Link href="https://github.com/mainnet_pat/axeswap" target="_blank" title="Github">
-            <Github />
           </Link>
           <Link href="https://t.me/AxeSwap" target="_blank" title="Telegram">
             <Send />
