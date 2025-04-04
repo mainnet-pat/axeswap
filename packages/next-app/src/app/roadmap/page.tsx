@@ -21,12 +21,12 @@ export default function RoadmapPage() {
           <p className="mt-2 pl-5">* Continued maintenance of the app is one of the most important goals.</p>
         </div>
 
-        <div className="flex flex-col md:flex-row w-full h-full mx-auto max-w-[95%] md:max-w-[85%] pb-10 gap-10 pt-10">
-          <div className="flex flex-col items-center break-all">
+        <div className="flex flex-col md:flex-row w-full h-full justify-center max-w-[95%] md:max-w-[85%] pb-10 gap-10 pt-10">
+          <div className="flex flex-col items-center break-all max-w-[260px]">
             <QrCode address="bitcoincash:qqsxjha225lmnuedy6hzlgpwqn0fd77dfq73p60wwp" iconSrc="/bch.svg" amount="1" />
             <div className="text-sm">bitcoincash:qqsxjha225lmnuedy6hzlgpwqn0fd77dfq73p60wwp</div>
           </div>
-          <div className="flex flex-col items-center break-all">
+          <div className="flex flex-col items-center break-all max-w-[260px]">
             <QrCode address="433CGJkA3gnh8JXCCB9ZbdVcGZsRPbWqEb72D5QFZomKKXV5i6jQfgjGwxXU9h64uHTAfVKCZDLMMdAhkS2UiYGX1UJuNhw" iconSrc="/xmr.png" amount="1" />
             <div className="text-sm">433CGJkA3gnh8JXCCB9ZbdVcGZsRPbWqEb72D5QFZomKKXV5i6jQfgjGwxXU9h64uHTAfVKCZDLMMdAhkS2UiYGX1UJuNhw</div>
           </div>
