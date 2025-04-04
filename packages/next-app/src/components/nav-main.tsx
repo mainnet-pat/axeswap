@@ -17,6 +17,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
@@ -41,6 +42,8 @@ export interface NavItems {
 export function NavMain({
   items,
 }: NavItems) {
+    const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -68,7 +71,7 @@ export function NavMain({
                   <SidebarMenuSub>
                     {item.items?.map((subItem) => (
                       !(subItem.hideIfEmpty && (subItem.badge ?? 0) === 0) && <SidebarMenuSubItem key={subItem.title} className="flex flex-row items-center">
-                        <SidebarMenuSubButton asChild className="flex-1">
+                        <SidebarMenuSubButton asChild className="flex-1" onClick={() => { if (isMobile && state === "expanded") { setOpenMobile(false); } }}>
                           <a href={subItem.url}>
                             <span>{subItem.title}</span>
                           </a>
@@ -80,7 +83,7 @@ export function NavMain({
                 </CollapsibleContent>
               </> :
               <>
-                <Link href={item.url}>
+                <Link href={item.url} onClick={() => { if (isMobile && state === "expanded") { setOpenMobile(false); } }}>
                   <SidebarMenuButton tooltip={item.title}>
                     {item.icon && <item.icon />}
                     <span>{item.title}</span>
