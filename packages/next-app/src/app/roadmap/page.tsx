@@ -14,7 +14,7 @@ export default function RoadmapPage() {
           <h1 className="text-3xl font-bold">Roadmap</h1>
           <p className="mt-4">AxeSwap is a young app and has big potential to unveil. However, as it has no platform fees, the further development and maintenance depends on community contributions. Consider a donation to the addresses below.</p>
           <p className="mt-4">This is why currently the roadmap has no fixed dates and looks more like an itemized development plan. There are no strong priorities set to the items.</p>
-          <p className="mt-2 pl-5">* Market-making bot to provide liquidity for the takers and farm the spread.</p>
+          <p className="mt-2 pl-5">* Market-making bot to provide liquidity for the takers and farm the spread by makers.</p>
           <p className="mt-2 pl-5">* Support for CashTokens-XMR swaps.</p>
           <p className="mt-2 pl-5">* Support for EVM swaps. ERC20 token swaps for EVM-BCH, EVM-CashTokens and EVM-XMR swaps.</p>
           <p className="mt-2 pl-5">* Support for BTC and its UTXO forks/spinoffs (LTC, DOGE) swaps.</p>

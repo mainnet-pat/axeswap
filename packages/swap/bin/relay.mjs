@@ -20,16 +20,20 @@ const PeerIdToObject = (peerId) => {
 
 const getPeerIdFromFs = async () => {
   try {
-    const data = fs.readFileSync(path.join(import.meta.dirname, "relay-peer-id.json"));
+    const data = fs.readFileSync(path.join(import.meta.dirname, "data/relay-peer-id.json"));
     return PeerIdFactory.createFromJSON(JSON.parse(data));
   } catch {}
 }
+
+try {
+  fs.mkdirSync(path.join(import.meta.dirname, "data"), { recursive: true });
+} catch {}
 
 const peerId = process.env.TEST ? await PeerIdFactory.createFromJSON(TestPeerId) : await getPeerIdFromFs();
 const port = 33333;
 
 const relayNode = await createRelayNode(peerId, port);
 
-fs.writeFileSync(path.join(import.meta.dirname, "relay-peer-id.json"), JSON.stringify(PeerIdToObject(relayNode.peerId), null, 2));
+fs.writeFileSync(path.join(import.meta.dirname, "data/relay-peer-id.json"), JSON.stringify(PeerIdToObject(relayNode.peerId), null, 2));
 
 console.log(`Relay started at\n${relayNode.getMultiaddrs().map(address => address.toString()).join("\n")}`);

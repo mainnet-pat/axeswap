@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: packages/swap/docker/relay/Dockerfile
+    volumes:
+      - ./data/relay:/app/packages/swap/bin/data
     ports:
       - 127.0.0.1:44444:33333
     restart: always
