@@ -263,8 +263,30 @@ export function OrderbookInner ({orderbook, orders} : {orderbook: Orderbook, ord
                 </Tooltip>
               </TooltipProvider>
             </TableCell>
-            <TableCell>{Number(order.amountA) / 10**getAssetDecimals(orderbook.asset)}</TableCell>
-            <TableCell>{Number(order.amountB) / 10**getAssetDecimals(orderbook.targetAsset)}</TableCell>
+            <TableCell>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <p>{Number(order.amountA) / 10**getAssetDecimals(orderbook.asset)}</p>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{(Number(order.amountA) / 10**getAssetDecimals(orderbook.asset) * (priceA ?? 0)).toFixed(2)}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </TableCell>
+            <TableCell>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <p>{Number(order.amountB) / 10**getAssetDecimals(orderbook.targetAsset)}</p>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{(Number(order.amountB) / 10**getAssetDecimals(orderbook.targetAsset) * (priceB ?? 0)).toFixed(2)}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </TableCell>
             <TableCell>{getRatio(order)}</TableCell>
             <TableCell className="text-right">{priceA && priceB && getPricedRatio(order, priceA!, priceB!)}</TableCell>
             <TableCell className="text-right">

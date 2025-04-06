@@ -29,14 +29,8 @@ const config: StorybookConfig = {
   webpackFinal: async (config) => {
     config.experiments = { ...config.experiments, topLevelAwait: true }
 
-    config.resolve!.alias!["fs"] = "@mainnet-pat/indexeddb-fs"
+    config.resolve!.alias!["fs"] = require.resolve("@mainnet-pat/indexeddb-fs"); //"@mainnet-pat/indexeddb-fs"
     config.resolve!.fallback!["child_process"] = false;
-
-    config.resolve!.alias!["JSON"] = "@mainnet-pat/json5-bigint";
-
-    // (globalThis as any).JSON = JSON5;
-    // // (window as any).JSON = JSON5;
-    // (global as any).JSON = JSON5;
 
     return config;
   }

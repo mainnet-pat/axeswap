@@ -50,6 +50,21 @@ export default function DocsPage() {
             Network fees are paid by the participants of the swap.
           </p>
 
+          <h1 className="text-2xl font-bold mt-4">Privacy</h1>
+          <p className="mt-2">
+            The app prioritizes user privacy above all else.
+            <br />
+            We do not collect any data from the users, do not track them with on-page analytics like GA, or in any other way.
+            <br />
+            This is why it is usually not possible for the 3rd party to associate the swap with a user.
+            Users are strongly advised to not reuse the same wallet addresses for multiple swaps.
+            <br />
+            The orderbook order events are transient and are not stored on any server.
+            Instead they are broadcast to a P2P network of peers.
+            If a peer goes offline, their orders will timeout and be delisted from the orderbook until they come back online, rejoin the network and re-broadcast their orders.
+            <br />
+          </p>
+
           <h1 className="text-2xl font-bold mt-4">How to test on testnets</h1>
           <p className="mt-2">
             To test the app on testnets you need to obtain some testnet coins.
