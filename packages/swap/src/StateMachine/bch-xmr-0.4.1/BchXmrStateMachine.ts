@@ -10,6 +10,8 @@ export type BobState = Omit<CommonState, "aXmrRefundAddress" | "bchFundingTxId">
 
 // Aka bob
 export default class BchXmrStateMachine extends StateMachine {
+  public PersistName = "BchXmrStateMachine";
+
   declare public state: BobState;
 
   private bchConfirmationsCallbackInner(confirmations: number, requiredConfirmations: number) {

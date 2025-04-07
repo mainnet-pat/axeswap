@@ -92,6 +92,8 @@ interface TransportPayload {
 
 // Local transport uses a local state to "send" and "receive" messages
 export class P2pTransport extends TypedEventEmitter<TransportEvents> implements Transport {
+  public PersistName = "P2pTransport";
+
   private state: Record<string, any> = {};
   public node!: Libp2p;
   public swapId: string = "";
@@ -108,12 +110,12 @@ export class P2pTransport extends TypedEventEmitter<TransportEvents> implements 
 
   public async persist() {
     await fs.mkdir(`data/${this.swapId}`, { recursive: true });
-    await fs.writeFile(`data/${this.swapId}/${this.constructor.name}.json5`, JSON5.stringify(this.state, null, 2));
+    await fs.writeFile(`data/${this.swapId}/${this.PersistName}.json5`, JSON5.stringify(this.state, null, 2));
   }
 
   public async restore(): Promise<boolean> {
     try {
-      this.state = JSON5.parse(await fs.readFile(`data/${this.swapId}/${this.constructor.name}.json5`, "utf-8"));
+      this.state = JSON5.parse(await fs.readFile(`data/${this.swapId}/${this.PersistName}.json5`, "utf-8"));
       return true;
     } catch {}
     return false;
@@ -210,7 +212,7 @@ export class P2pTransport extends TypedEventEmitter<TransportEvents> implements 
       this.swapId = swapId;
     }
     // else {
-    //   console.log(this.constructor.name, "connect", 2, swapId, this.swapId);
+    //   console.log(this.PersistName, "connect", 2, swapId, this.swapId);
     //   this.swapId = binToBase58(generateRandomBytes(10));
     // }
 

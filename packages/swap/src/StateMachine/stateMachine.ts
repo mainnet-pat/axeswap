@@ -72,6 +72,8 @@ export class StateLoggerWithEvents extends TypedEventEmitter<ObservableEvents> i
 }
 
 export class StateMachine extends StateLoggerWithEvents {
+  public PersistName = "StateMachine";
+
   public declare state: State;
   public next?: Function = undefined as any;
   public paused = false;
@@ -142,12 +144,12 @@ export class StateMachine extends StateLoggerWithEvents {
 
   public async persist()  {
     await fs.mkdir(`data/${this.state.swapId}`, { recursive: true });
-    await fs.writeFile(`data/${this.state.swapId}/${this.constructor.name}.json5`, JSON5.stringify(this.state, null, 2));
+    await fs.writeFile(`data/${this.state.swapId}/${this.PersistName}.json5`, JSON5.stringify(this.state, null, 2));
   }
 
   public async restore() {
     try {
-      this.state = JSON5.parse(await fs.readFile(`data/${this.state.swapId}/${this.constructor.name}.json5`, "utf-8"));
+      this.state = JSON5.parse(await fs.readFile(`data/${this.state.swapId}/${this.PersistName}.json5`, "utf-8"));
       this.safeDispatchEvent("#update");
     } catch {}
   }
@@ -163,7 +165,7 @@ export class StateMachine extends StateLoggerWithEvents {
   public async abandon() {
     this.state.currentState = "abandoned";
     await this.persist();
-    this.log(this.state.swapId, this.constructor.name, "abandoning...");
+    this.log(this.state.swapId, this.PersistName, "abandoning...");
     this.safeDispatchEvent("#update");
     await this.transport.close();
   }
@@ -177,7 +179,7 @@ export class StateMachine extends StateLoggerWithEvents {
     this.safeDispatchEvent("#update");
 
     this.next = async () => {
-      this.log(this.state.swapId, this.constructor.name, "dispatching", methodName);
+      this.log(this.state.swapId, this.PersistName, "dispatching", methodName);
       await (this as any)[methodName](...payload);
     };
 
@@ -188,7 +190,7 @@ export class StateMachine extends StateLoggerWithEvents {
     if (!this.breakpoints.includes(methodName)) {
       await this.next();
     } else {
-      this.log(this.state.swapId, this.constructor.name, "halting before dispatching", methodName);
+      this.log(this.state.swapId, this.PersistName, "halting before dispatching", methodName);
     }
 
     await this.persist();
@@ -222,12 +224,12 @@ export class StateMachine extends StateLoggerWithEvents {
       await this.persist();
       await this.next();
     } else {
-      this.log(this.state.swapId, this.constructor.name, "restoring...");
+      this.log(this.state.swapId, this.PersistName, "restoring...");
       await this.restore();
 
       const currentState = this.state.currentState || "exec";
       if (!["success", "abandoned"].includes(currentState)) {
-        this.log(this.state.swapId, this.constructor.name, "dispatching", currentState);
+        this.log(this.state.swapId, this.PersistName, "dispatching", currentState);
         await (this as any)[currentState]();
       }
     }
@@ -235,7 +237,7 @@ export class StateMachine extends StateLoggerWithEvents {
   }
 
   public failWithReason(reason: string) {
-    this.log(this.state.swapId, this.constructor.name, "failing with reason:", reason);
+    this.log(this.state.swapId, this.PersistName, "failing with reason:", reason);
     this.state.error = reason;
     this.persist(); // async
     this.safeDispatchEvent("#update");

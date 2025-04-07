@@ -11,6 +11,8 @@ export type AliceState = Omit<CommonState, "bXmrReceivingAddress">;
 
 // aka Alice
 export default class XmrBchStateMachine extends StateMachine {
+  public PersistName = "XmrBchStateMachine";
+
   declare public state: AliceState;
   private bchConfirmationsCallbackInner(confirmations: number, requiredConfirmations: number) {
     this.log(`BCH confirmations: ${confirmations}/${requiredConfirmations}`);

@@ -87,6 +87,8 @@ beforeEach(async () => {
 });
 
 class XmrBchStateMachineTest extends XmrBchStateMachine {
+  public PersistName = "XmrBchStateMachineTest";
+
   public bchConfirmationsCallback = (confirmations: number, requiredConfirmations: number) => {
     console.log(`Alice received ${confirmations}/${requiredConfirmations} BCH confirmations`);
   };
@@ -123,6 +125,8 @@ class XmrBchStateMachineTest extends XmrBchStateMachine {
 const mutex = new Mutex();
 
 class BchXmrStateMachineTest extends BchXmrStateMachine {
+  public PersistName = "BchXmrStateMachineTest";
+
   public bchConfirmationsCallback = (confirmations: number, requiredConfirmations: number) => {
     console.log(`Bob received ${confirmations}/${requiredConfirmations} BCH confirmations`);
   };
