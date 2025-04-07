@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { SwapAssetCard } from "./SwapAssetCard";
 import { useSwapManagerContext } from "@/providers/SwapManagerProvider";
-import { Orderbook, OrderSubmission, PeerIdToObject, State, Config, BobState, validateXmrAddress, validateBchAddress } from "@xmr-bch-swap/swap";
+import { Orderbook, OrderSubmission, PeerIdToObject, State, Config, BobState, validateXmrAddress, validateBchAddress, DEFAULT_TTL } from "@xmr-bch-swap/swap";
 import { RelayMultiaddrs } from "@/lib/RelayMultiaddrs";
 import { Separator } from "./ui/separator";
 import { createEd25519PeerId } from '@libp2p/peer-id-factory'
@@ -310,7 +310,7 @@ export function SwapCard ({} : {}) {
         amountA: BigInt(Math.floor(firstAsset.assetId.includes("XMR") ? Number(firstAmount) * 1e12 : Number(firstAmount) * 1e8)),
         amountB: BigInt(Math.floor(secondAsset.assetId.includes("XMR") ? Number(secondAmount) * 1e12 : Number(secondAmount) * 1e8)),
         agent: "user",
-        expiresAt: Date.now() + 60 * 60 * 1000,
+        expiresAt: Date.now() + DEFAULT_TTL,
         transportPeerId: peerId.toString(),
       };
 

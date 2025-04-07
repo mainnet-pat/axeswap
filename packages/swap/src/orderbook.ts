@@ -19,6 +19,8 @@ import "@mainnet-pat/json5-bigint/lib/presets/extended"
 import { ObservableEvents, Order, OrderAddedEvent, OrderbookEvents, OrderbookPayload, OrderExpiredEvent, OrderRemovedEvent, OrderSubmission, OrderTakenEvent, RawEvent } from './interfaces'
 import { createEd25519PeerId } from '@libp2p/peer-id-factory'
 
+export const DEFAULT_TTL = 1000 * 5 * 60; // 5 minutes
+
 export const createOrderbookNode = async (bootstrapMultiaddrs: string[], peerId?: PeerId) => {
   const node = await createLibp2p({
     peerId,
@@ -270,9 +272,9 @@ export class Orderbook extends TypedEventEmitter<OrderbookEvents & ObservableEve
     if (awaitDelivery) {
       await promise;
     }
+    fullOrder.isMine = true;
     this.orders[fullOrder.id] = {
-      ...fullOrder,
-      isMine: true,
+      ...fullOrder
     };
 
     clearTimeout(this.timers[fullOrder.id]);
@@ -289,6 +291,13 @@ export class Orderbook extends TypedEventEmitter<OrderbookEvents & ObservableEve
 
     this.safeDispatchEvent<ObservableEvents>('#update');
     return fullOrder.id;
+  }
+
+  // `readd` adds back an expired order but with a different id
+  public async readd(order: OrderSubmission, awaitDelivery: boolean = true): Promise<string> {
+    delete order.id;
+    order.expiresAt = Date.now() + DEFAULT_TTL;
+    return this.add(order, awaitDelivery);
   }
 
   // `remove` signals to the network that we are removing our orders

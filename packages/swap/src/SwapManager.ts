@@ -182,8 +182,13 @@ export class SwapManager extends TypedEventEmitter<ObservableEvents & SwapManage
 
       orderbook.addEventListener("orderExpired", async (event) => {
         // re-add the order back to the orderbook until we go offline
-        const order = event.detail.order;
-        await orderbook.add(order);
+        const oldOrder = event.detail.order;
+        const swap = Object.values(this.waitingSwaps()).find(swap => swap.state.orderbookId === oldOrder.id)!;
+        const orderId = await orderbook.readd(oldOrder);
+        swap.state.orderbookId = orderId;
+        swap.state.orderbookEntry = orderbook.orders[orderId];
+        await swap.persist();
+        swap.safeDispatchEvent("#update");
       });
 
       this.orderbooks[swapPair] = orderbook;
