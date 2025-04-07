@@ -243,6 +243,7 @@ export function OrderbookInner ({orderbook, orders} : {orderbook: Orderbook, ord
       <TableHeader>
         <TableRow>
           <TableHead className="min-w-[50px]">Maker</TableHead>
+          <TableHead className="hidden sm:table-cell">Value</TableHead>
           <TableHead>Amt {getAssetShortName(orderbook.asset)}</TableHead>
           <TableHead>Amt {getAssetShortName(orderbook.targetAsset)}</TableHead>
           <TableHead>Ratio</TableHead>
@@ -256,12 +257,22 @@ export function OrderbookInner ({orderbook, orders} : {orderbook: Orderbook, ord
             <TableCell className="font-medium">
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger>{order.peerId.split('/').at(-1)?.slice(0, 20)}...</TooltipTrigger>
+                  <TooltipTrigger>
+                    <span className="flex md:hidden">
+                      {order.peerId.split('/').at(-1)?.slice(0, 10)}...
+                    </span>
+                    <span className="hidden md:flex">
+                      {order.peerId.split('/').at(-1)?.slice(0, 20)}...
+                    </span>
+                  </TooltipTrigger>
                   <TooltipContent>
                     <p>{order.peerId}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
+            </TableCell>
+            <TableCell className="hidden sm:table-cell">
+              ${(Number(order.amountA) / 10**getAssetDecimals(orderbook.asset) * (priceA ?? 0)).toFixed(2)}
             </TableCell>
             <TableCell>
               <TooltipProvider>
@@ -270,7 +281,7 @@ export function OrderbookInner ({orderbook, orders} : {orderbook: Orderbook, ord
                     <p>{Number(order.amountA) / 10**getAssetDecimals(orderbook.asset)}</p>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{(Number(order.amountA) / 10**getAssetDecimals(orderbook.asset) * (priceA ?? 0)).toFixed(2)}</p>
+                    <p>${(Number(order.amountA) / 10**getAssetDecimals(orderbook.asset) * (priceA ?? 0)).toFixed(2)}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -282,7 +293,7 @@ export function OrderbookInner ({orderbook, orders} : {orderbook: Orderbook, ord
                     <p>{Number(order.amountB) / 10**getAssetDecimals(orderbook.targetAsset)}</p>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{(Number(order.amountB) / 10**getAssetDecimals(orderbook.targetAsset) * (priceB ?? 0)).toFixed(2)}</p>
+                    <p>${(Number(order.amountB) / 10**getAssetDecimals(orderbook.targetAsset) * (priceB ?? 0)).toFixed(2)}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
