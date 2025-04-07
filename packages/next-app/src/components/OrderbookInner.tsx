@@ -266,7 +266,8 @@ export function OrderbookInner ({orderbook, orders} : {orderbook: Orderbook, ord
                     </span>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{order.peerId}</p>
+                    <p>PeerId: {order.peerId}</p>
+                    <p className="mt-2">OrderId: {order.id}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>

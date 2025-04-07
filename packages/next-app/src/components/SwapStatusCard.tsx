@@ -51,7 +51,7 @@ export function SwapStatusCard({state} : {state: CommonState}) {
 
   return (
     <>
-    <div className="flex flex-col gap-2 items-center">
+    <div className="flex flex-col gap-2 items-center pb-10">
       <SwapInfoBadge state={state} />
 
       {!state.error && !["success", "abandoned"].includes(state.currentState) && <LoaderCircle size={32} className="animate-spin" />}
@@ -72,7 +72,7 @@ export function SwapStatusCard({state} : {state: CommonState}) {
           ))}
         </div>
       </div>}
-      {state.logs.length > 0 && <div className="max-w-[300px] md:max-w-[420px] pb-10"><Logs logs={state.logs} /></div>}
+      {state.logs.length > 0 && <div className="max-w-[300px] md:max-w-[420px]"><Logs logs={state.logs} /></div>}
     </div>
     </>)
 }
