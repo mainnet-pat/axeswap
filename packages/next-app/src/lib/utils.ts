@@ -75,7 +75,7 @@ export const findAssetById = (assetId: string) => {
 }
 export const Endpoints: Record<string, Record<string, string[]>> = {
   "mainnet": {
-    "monero": ["https://node.sethforprivacy.com", "https://xmr.salami.network", "https://xmr.bunkerlab.net", "https://dewitte.fiatfaucet.com", "https://xmr.bad.mn"],
+    "monero": ["https://xmr.salami.network", "https://xmr.bunkerlab.net", "https://dewitte.fiatfaucet.com", "https://xmr.bad.mn"],
     "bch": ["wss://electrum.imaginary.cash:50004"],
   },
   "testnet": {
