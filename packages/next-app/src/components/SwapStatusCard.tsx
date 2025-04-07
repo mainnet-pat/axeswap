@@ -72,7 +72,7 @@ export function SwapStatusCard({state} : {state: CommonState}) {
           ))}
         </div>
       </div>}
-      {state.logs.length > 0 && <div className="max-w-[300px] md:max-w-[420px]"><Logs logs={state.logs} /></div>}
+      {state.logs.length > 0 && <div className="max-w-[300px] md:max-w-[420px] pb-10"><Logs logs={state.logs} /></div>}
     </div>
     </>)
 }

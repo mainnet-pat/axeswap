@@ -14,10 +14,8 @@ const regexp = new RegExp(/(\d+)\s(log|info|error|trace)\:\s\w{10,}\s\w+\s(.*)/)
 // simpler matcher for any logs
 const regexp2 = new RegExp(/(\d+)\s(log|info|error|trace)\:\s(.*)/);
 
-const PROD = process.env.NODE_ENV === "production";
-
 export function Logs({logs}: {logs: string[]}) {
-  const [expanded, setExpanded] = useState(PROD);
+  const [expanded, setExpanded] = useState(true);
 
   const [processedLogs, setProcessedLogs] = useState<Log[]>([]);
 
