@@ -148,24 +148,21 @@ export const waitForBchConfirmations = async (address: string, totalAmount: bigi
         tx.vout.filter(vout => vout.scriptPubKey.addresses[0] === address).reduce((prev, curr) => prev + curr.value * 1e8, 0) >= totalAmount
       );
 
-      if (!transaction) {
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-        continue;
-      }
+      if (transaction) {
+        const gotConfirmations = transaction.height <= 0 ? 0 : (Math.max(0, blockHeight - transaction.height) + 1);
+        if (updateCallback) {
+          if (seenConfirmations !== gotConfirmations) {
+            seenConfirmations = gotConfirmations;
+            updateCallback(gotConfirmations, requiredConfirmations);
+          }
+        }
 
-      const gotConfirmations = transaction.height <= 0 ? 0 : (Math.max(0, blockHeight - transaction.height) + 1);
-      if (updateCallback) {
-        if (seenConfirmations !== gotConfirmations) {
-          seenConfirmations = gotConfirmations;
-          updateCallback(gotConfirmations, requiredConfirmations);
+        if (gotConfirmations >= requiredConfirmations || gotConfirmations >= 10) {
+          return transaction.txid;
         }
       }
 
-      if (gotConfirmations >= requiredConfirmations || gotConfirmations >= 10) {
-        return transaction.txid;
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 10000));
     }
   }
 };
@@ -273,7 +270,7 @@ export const waitForXmrConfirmations = async (wallet: MoneroWalletFull, totalAmo
         return;
       }
     }
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 10000));
   }
 }
 
