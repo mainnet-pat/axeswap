@@ -50,7 +50,7 @@ export const createOrderbookNode = async (bootstrapMultiaddrs: string[], peerId?
         list: bootstrapMultiaddrs,
       }),
       pubsubPeerDiscovery({
-        interval: 250,
+        interval: 3000,
       })
     ],
     connectionEncryption: [noise()],
@@ -191,6 +191,10 @@ export class Orderbook extends TypedEventEmitter<OrderbookEvents & ObservableEve
   }
 
   private handleAdd(order: Order) {
+    if (order.expiresAt < Date.now()) {
+      return;
+    }
+
     this.safeDispatchEvent<OrderAddedEvent>('orderAdded', { detail: { order } });
 
     this.orders[order.id] = order;
@@ -260,6 +264,10 @@ export class Orderbook extends TypedEventEmitter<OrderbookEvents & ObservableEve
 
   // `add` signals to the network that we are adding our orders
   public async add(order: OrderSubmission, awaitDelivery: boolean = true): Promise<string> {
+    if (order.expiresAt < Date.now()) {
+      order.expiresAt = Date.now() + DEFAULT_TTL;
+    }
+
     const fullOrder: Order = this.completeOrderData(order);
 
     const payload: OrderbookPayload = {
