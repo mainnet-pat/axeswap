@@ -163,7 +163,8 @@ export class Orderbook extends TypedEventEmitter<OrderbookEvents & ObservableEve
 
     // request the orders from the network as soon as we are connected to at least one peer
     const discoveryHandler = async (event: CustomEvent<SubscriptionChangeData>) => {
-      if (!event.detail.subscriptions.some(subscription => subscription.topic === this.protocol && subscription.subscribe === true)) {
+      const subscription = event.detail.subscriptions.find(subscription => subscription.topic === this.protocol && subscription.subscribe === true);
+      if (!subscription) {
         return;
       }
       console.log("peer:discovery", event.detail.peerId.toString(), event.detail.subscriptions[1]);
@@ -181,7 +182,6 @@ export class Orderbook extends TypedEventEmitter<OrderbookEvents & ObservableEve
       }
     };
     this.node.services.pubsub.addEventListener('subscription-change', discoveryHandler);
-
 
     this.node.services.pubsub.subscribe(this.protocol);
   }
