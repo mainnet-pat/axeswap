@@ -4,6 +4,7 @@ import * as React from "react"
 import {
   BookText,
   DownloadCloud,
+  FileStack,
   GalleryVerticalEnd,
   Github,
   Map,
@@ -83,6 +84,12 @@ const navData = {
       ],
     },
     {
+      title: "History",
+      url: "/history",
+      icon: FileStack,
+      isActive: true,
+    },
+    {
       title: "Settings",
       url: "/settings",
       icon: Settings,
@@ -117,11 +124,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const completedSwaps = manager.completedSwaps().length;
 
     setData((prev) => {
-      prev.navMain[2].items![0].badge = waitingSwaps || undefined;
-      prev.navMain[2].items![1].badge = activeSwaps || undefined;
-      prev.navMain[2].items![2].badge = attention || undefined;
-      prev.navMain[2].items![3].badge = failedSwaps || undefined;
-      prev.navMain[2].items![4].badge = completedSwaps || undefined;
+      const swapSubmenuIndex = prev.navMain.findIndex((item) => item.title === "Swaps");
+
+      prev.navMain[swapSubmenuIndex].items![0].badge = waitingSwaps || undefined;
+      prev.navMain[swapSubmenuIndex].items![1].badge = activeSwaps || undefined;
+      prev.navMain[swapSubmenuIndex].items![2].badge = attention || undefined;
+      prev.navMain[swapSubmenuIndex].items![3].badge = failedSwaps || undefined;
+      prev.navMain[swapSubmenuIndex].items![4].badge = completedSwaps || undefined;
       return { ...prev };
     });
   }, [manager, manager?.swaps, update]);
