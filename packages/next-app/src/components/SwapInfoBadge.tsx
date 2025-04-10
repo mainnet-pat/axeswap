@@ -28,6 +28,7 @@ export function SwapInfoBadge({state} : {state: CommonState}) {
 
     <div className="text-center">
       <div className="text-xs">Swap ID: {state.swapId}</div>
+      <div className="text-xs">Order ID: {state.orderbookId}</div>
       <div className="text-xs" title={moment(state.timestamp).calendar()}>Date: {moment(state.timestamp).fromNow()}</div>
     </div>
   </>
