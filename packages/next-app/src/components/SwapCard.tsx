@@ -105,9 +105,7 @@ export function SwapCard ({} : {}) {
   useEffect(() => {
     (async () => {
       if (swapManager && firstAsset && secondAsset) {
-        const [asset, targetAsset] = [firstAsset.assetId, secondAsset.assetId].sort();
-        const instance = await swapManager?.getOrderbook(asset as any, targetAsset as any, version, RelayMultiaddrs, undefined);
-        // console.log(asset, targetAsset)
+        const instance = await swapManager?.getOrderbook(firstAsset.assetId as any, secondAsset.assetId as any, version, RelayMultiaddrs, undefined);
         setOrderBook(instance);
       }
     })();
