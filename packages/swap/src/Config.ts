@@ -3,7 +3,7 @@
 // keys are asset1:asset2/version where assets are sorted alphabetically
 export const Config: Record<string, any> = {
   "BCH:native-XMR:native/0.4.1": {
-    xmrRpc: "https://node.sethforprivacy.com",
+    xmrRpc: "https://xmr.salami.network",
     bchRpc: "wss://bch.imaginary.cash:50004",
     xmrNetwork: "mainnet",
     bchNetwork: "mainnet",

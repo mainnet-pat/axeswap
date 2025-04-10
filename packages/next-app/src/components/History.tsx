@@ -16,7 +16,6 @@ const query = /* graphql */ `
 query swapHistory {
   input (where: {
     redeem_bytecode_pattern: {_eq: "c3519dc4519d0200c600cc949d00cb641900cd788821ba6752b2752300cd8768"}
-    transaction: {block_inclusions: {block: {accepted_by: {node: {name: {_ilike: "%mainnet%"}}}}}}
   })
   {
 		value_satoshis
@@ -25,6 +24,11 @@ query swapHistory {
       block_inclusions {
         block {
           timestamp
+          accepted_by {
+            node {
+              name
+            }
+          }
         }
       }
     }
@@ -33,7 +37,7 @@ query swapHistory {
 `;
 
 const fetchHistory = async () => {
-  let jsonResponse: { data?: { input?: Array<{value_satoshis: string, transaction: { hash: string, block_inclusions: Array<{ block: { timestamp: string } }> }}> } } = {};
+  let jsonResponse: { data?: { input?: Array<{value_satoshis: string, transaction: { hash: string, block_inclusions: Array<{ block: { timestamp: string, accepted_by: Array<{ node: { name: string} }> } }> }}> } } = {};
   try {
     const response = await fetch("https://gql.chaingraph.pat.mn/v1/graphql", {
       body: JSON.stringify({
@@ -55,7 +59,9 @@ const fetchHistory = async () => {
     return [];
   }
 
-  const result = jsonResponse?.data?.input?.map((item) => {
+  const result = jsonResponse?.data?.input?.filter((item) =>
+    item.transaction.block_inclusions.length === 0 || item.transaction.block_inclusions[0]?.block.accepted_by[0]?.node.name.toLowerCase().includes("mainnet")
+  ).map((item) => {
     const amountBch = parseInt(item.value_satoshis);
     const txId = item.transaction.hash;
     const timestamp = item.transaction.block_inclusions.length ? parseInt(item.transaction.block_inclusions[0].block.timestamp) : 0;
@@ -67,7 +73,9 @@ const fetchHistory = async () => {
     } as HistoryItem;
   }) ?? [];
 
-  result.sort((a, b) => b.timestamp - a.timestamp);
+  console.log(result);
+
+  result.sort((a, b) => a.timestamp === 0 || b.timestamp === 0 ? -b.timestamp : b.timestamp - a.timestamp);
 
   return result;
 }
