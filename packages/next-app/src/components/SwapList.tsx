@@ -32,7 +32,7 @@ export function SwapsList(filter: Filter) {
       { href: "/swaps/", title: FilterNames[filter], collapsible: false },
     ]} />
     <div className="flex flex-col items-center">
-      {swaps?.map((swap) => <div key={swap.state.swapId} className="rounded-xl p-4 border-2 cursor-pointer" onClick={() => router.push(`/swaps/${swap.state.swapId}`)}><SwapInfoBadge state={swap.state as CommonState}/></div>)}
+      {swaps?.sort((a, b) => b.state.timestamp - a.state.timestamp).map((swap) => <div key={swap.state.swapId} className="rounded-xl p-4 border-2 cursor-pointer" onClick={() => router.push(`/swaps/${swap.state.swapId}`)}><SwapInfoBadge state={swap.state as CommonState}/></div>)}
       {swaps && !swaps.length && <div className="text-lg text-gray-500">No swaps found</div>}
     </div>
   </>;
