@@ -36,14 +36,14 @@ export const createOrderbookNode = async (bootstrapMultiaddrs: string[], peerId?
       })
     ],
     connectionGater: {
-      // debug-only, TODO: add env configuration
-      denyDialMultiaddr: () => {
-        // by default we refuse to dial local addresses from browsers since they
-        // are usually sent by remote peers broadcasting undialable multiaddrs and
-        // cause errors to appear in the console but in this example we are
-        // explicitly connecting to a local node so allow all addresses
-        return false
-      }
+      // // debug-only, TODO: add env configuration
+      // denyDialMultiaddr: () => {
+      //   // by default we refuse to dial local addresses from browsers since they
+      //   // are usually sent by remote peers broadcasting undialable multiaddrs and
+      //   // cause errors to appear in the console but in this example we are
+      //   // explicitly connecting to a local node so allow all addresses
+      //   return false
+      // }
     },
     peerDiscovery: [
       bootstrap({

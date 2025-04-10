@@ -1,6 +1,5 @@
 "use client";
 
-import { Crumbs } from '@/components/Crumbs';
 import { getAssetAmount, getAssetIcon, getAssetName, getAssetShortName } from '@/lib/utils';
 import { ArrowRightLeft } from 'lucide-react';
 import moment from 'moment';

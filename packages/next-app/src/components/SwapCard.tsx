@@ -270,6 +270,8 @@ export function SwapCard ({} : {}) {
     setFirstAmount(secondAmount);
     setSecondAmount(firstAmount);
 
+    setDefaultsLoaded(false);
+
     window.history.replaceState(null, document.title, `${pathName}?sell=${secondAsset?.assetId}&buy=${firstAsset?.assetId}`);
   }, [firstAsset, secondAsset, firstAmount, secondAmount, pathName]);
 
