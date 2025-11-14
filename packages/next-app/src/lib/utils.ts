@@ -26,12 +26,12 @@ export const Assets: Record<string, Asset[]> = {
       name: "Monero",
       icon: "/xmr.png",
     },
-    {
-      assetId: "BCH:270fc70ef4d352ff454bcc218e42b20f246f0691af07af9a069608f14f031c48",
-      ticker: "PUMP",
-      name: "BCH PUMP Token",
-      icon: "/pump.jpeg",
-    },
+    // {
+    //   assetId: "BCH:270fc70ef4d352ff454bcc218e42b20f246f0691af07af9a069608f14f031c48",
+    //   ticker: "PUMP",
+    //   name: "BCH PUMP Token",
+    //   icon: "/pump.jpeg",
+    // },
   ],
   "testnet": [
     {
